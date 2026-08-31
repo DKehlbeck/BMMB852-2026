@@ -1,0 +1,4 @@
+Absolute path:
+/home/declan/declan/BMMB852/BMMB852-2026/week01
+Relative path:
+week01sub/week01sub_subdirectory/notes.txt
