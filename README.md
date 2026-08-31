@@ -1,3 +1,9 @@
-#BMMB852 Fall 2026 repo
+# BMMB852 Applied Bioinformatics
 
-Weekly assignments will be included here
+Fall 2026
+
+Weekly assignments will be posted here
+
+## Weekly assignments
+
+- Week 1: [System setup & UNIX command line introduction](week01/README.md)
