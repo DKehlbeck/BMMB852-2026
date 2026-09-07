@@ -95,7 +95,7 @@ The supplied FASTA and GFF were loaded into IGV. The GFF track displays annotate
 #### Example
 
 
-![IGV view of chromosome positions 83,626–84,085 showing reverse and forward features in the GFF track.](screenshots/igv-83626-84085.png)
+![IGV view of chromosome positions 83,626–84,085 showing reverse and forward features in the GFF track.](images/igv-83626-84085.png)
 
 
 ### Gene packing
@@ -108,4 +108,4 @@ Most genomic features are **40–200 bp apart**, while a few are seperated by **
 - This coordinate can fall in a frame producing **N**, **I**, or a **TAA  Ochre stop codon**. 
 - On the reverse strand, the three codon frames correspond to an  **L**, **N**, or **I**. 
 
-![IGV view centered near chromosome position 74,960, showing the sequence, six-frame translation, and GFF feature track.](screenshots/igv-74960.png)
+![IGV view centered near chromosome position 74,960, showing the sequence, six-frame translation, and GFF feature track.](images/igv-74960.png)
