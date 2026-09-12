@@ -1,111 +1,29 @@
-# Mycoplasmoides gallisepticum genome analysis
+# Lauren's Additional Notes for Changes to the Makefile
 
-This directory contains a small, reproducible workflow for downloading and organizing the NCBI RefSeq assembly `GCF_900476085.1` for *Mycoplasmoides gallisepticum* strain NCTC10115.
+I chose to look at Declan's repository: https://github.com/DKehlbeck/BMMB852-2026
 
-## Workflow usage
+## Code Safety
 
-Requirements:
+I asked my AI assistant to simulate the directions to assess its safety and efficiency using the following prompt:
 
-pixi envionment with the following installed packages:
-- GNU Make
-- NCBI `datasets` command-line tool
-- `unzip`
-- `find`
-- Python 3 (used by the summary command)
-
-From this directory, run:
-
-```bash
-make all
+```
+https://github.com/DKehlbeck/BMMB852-2026/blob/main/week02/README.md Read this readme file and simulate the instructions given. Tell me first whether or not the code is safe to run, and then tell me how to make this code more efficent.
 ```
 
-The default target runs `move`, which downloads the assembly and GFF3 annotation, unpacks the NCBI data package, creates the organized `data/fna/` and `data/gff/` directories, renames the files using the accession, and removes the temporary accession directory. It then runs `summary`, which prints the genome size, chromosome count, and annotation count.
+The report for safety came back as "conditionally safe to run" because the directions do not execute any downloaded files, and it only downloads and organizes NCBI archive FASTA and GFF files.
 
-Individual stages can also be run as follows:
+## Code Efficiency
 
-```bash
-make download   # download the NCBI Datasets package
-make unzip      # unpack it into the data directory
-make organize   # create fna/ and gff/ directories
-make move       # copy and rename the sequence and annotation files
-make summary    # calculate the three summary values
-make clean      # remove the downloaded/organized package
-```
+As for efficiency, the efficiency report came back with a multitude of suggestions, some of which I agree with and others I don't know if they are necessary. 
 
-If the package has already been downloaded, the workflow uses the existing files. To reproduce the complete download from scratch, run `make clean`
+I would definitely reduce the amount of legwork done by the user getting from start to finish. 
 
-Original NCBI directory organization is stored in 
-```bash
-directory_after_unzip.txt
-```
+Now to compare the efficency of my code:
 
-## Data organization
+<img width="376" height="398" alt="image" src="https://github.com/user-attachments/assets/85b739fe-e0e6-4289-8a6f-4538e3a1a136" />
 
-The data are organized by file purpose rather than placing every downloaded file in the top-level directory:
+My code is significantly less lines than my classmate's, and has cleaner file unzips and moves. My code, however, does not have a summary scan to verify safety. My AI assistant does conclude that my code is smoother and "better" by comparison, however. As a result, my code is technically lighter and more efficient, but there are more features of my classmate's code. 
 
-```text
-week02/
-├── Makefile
-└── downloads_GCF_900476085.1/
-    ├── data/
-    │   ├── fna/GCF_900476085.1.fna    # genomic nucleotide sequence
-    │   ├── gff/GCF_900476085.1.gff    # genome annotation
-    │   ├── assembly_data_report.jsonl  # assembly metadata
-    │   └── dataset_catalog.json        # NCBI package metadata
-    ├── directory_after_unzip.txt
-    ├── directory_after_move.txt
-    └── md5sum.txt
-```
+## My Changes
 
-The FASTA sequence and GFF annotation are kept in separate `fna/` and `gff/` directories. The downloaded package metadata and directory listings are retained alongside them for provenance.
-
-## Limitations & other usage
-
-As the genome accession is hard coded, this script may be adapted for other NCBI assembled genomes by changing line 1 for the desired genome
-
-If a microbial genome has multiple independent fastas, such as a segmented virus, this script will not work
-
-If any additional files outside of .fna or .gff3 are needed, those are hard coded in download and can be appended.
-
-# Genome summary
-
-The values below were calculated from the files in `data/fna/` and `data/gff/` by the Makefile's `summary` target.
-
-| Question | Answer |
-| --- | --- |
-| How large is the genome? | **981,408 bp** |
-| How many chromosomes does it have? | **1 chromosome** (`NZ_LS991952.1`) |
-| How many annotation records are in the GFF file? | **1,635 records**, excluding comment/directive lines |
-| How many gene records are present? | **765 genes** |
-
-The annotation count includes all non-comment GFF records, including genes, CDS features, exons, RNAs, the chromosome region, and other sequence features. It is therefore larger than the gene count. The feature breakdown includes 754 CDS records, 765 gene records, 41 exons, 32 tRNAs, 6 rRNAs, 30 pseudogenes, and several additional RNA or regulatory features.
-
-## Assembly completeness
-
-NCBI describes it as a **Complete Genome**, and the FASTA contains one annotated chromosome sequence. Suggestive of a completely assembled genome. However, inspection of some genomic RNA features do not have any defined reading frames that exisit within the single feature, so I am curious how these annotations were generated if manually or from another reference genome.
-
-
-## IGV visualization
-
-The supplied FASTA and GFF were loaded into IGV. The GFF track displays annotated genomic features, especially genes and their corresponding CDS features; RNA transcripts/features are also shown where they are present in the annotation. Features were colored by strand orientation:
-
-- **Blue:** forward (`+`) strand
-- **Red:** reverse (`-`) strand
-
-#### Example
-
-
-![IGV view of chromosome positions 83,626–84,085 showing reverse and forward features in the GFF track.](images/igv-83626-84085.png)
-
-
-### Gene packing
-
-Most genomic features are **40–200 bp apart**, while a few are seperated by **400–2,000 bp**. 
-
-### Coordinate 74,960
-
-- At chromosome position **74,960**, the inspected forward strand base is **adenine (A)**. 
-- This coordinate can fall in a frame producing **N**, **I**, or a **TAA  Ochre stop codon**. 
-- On the reverse strand, the three codon frames correspond to an  **L**, **N**, or **I**. 
-
-![IGV view centered near chromosome position 74,960, showing the sequence, six-frame translation, and GFF feature track.](images/igv-74960.png)
+Unfortunately when I tried to run Declan's makefile, it didn't work because the files weren't targeted correctly. In my updated version of their makefile, I have updated the commands so the files are targeted correctly, and removed an excess of extra files that were generated by the original makefile. I also had the makefile rename the downloaded files to the species name instead of a long ascension number and other such random file name bits, just so the file was easier to interpret. Now when you run the makefile, the information downloads and organizes smoothly with no excess files. I also removed the need for python, replacing the language for the python-using command with regular Ubuntu linux code. 
