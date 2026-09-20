@@ -28,17 +28,15 @@ Breakdown of SRA datasets: [NCBI SRA datasets for ILTV](https://www.ncbi.nlm.nih
 
 Unfortunately, a majority of sequenced ILTV data is not represented in the SRA; see the NCBI genome dataset page: [NCBI genome datasets for ILTV](https://www.ncbi.nlm.nih.gov/datasets/genome/?taxon=10386).
 
-File type breakdown
-
-    - 45 fastq (Oxford Nanopore amplicon seq, illumina WGS, illumina RNAseq)
-
-    - 12 bam format (Illumina RNAseq)
+- File type breakdown:
+  - 45 FASTQ files (Oxford Nanopore amplicon sequencing, Illumina WGS, and Illumina RNA-seq)
+  - 12 BAM files (Illumina RNA-seq)
 
 Compared to gallid alphaherpesvirus 2 (Mareks Disease Virus), there are far less genomes (16 vs ~200) and RNAseq data for ILTV: [NCBI SRA datasets for MDV](https://www.ncbi.nlm.nih.gov/sra?term=MDV%5BAll%20Fields%5D%20OR%20%28%22Gallid%20alphaherpesvirus%202%22%5BOrganism%5D%20OR%20Mareks%20Disease%20virus%5BAll%20Fields%5D%29%20OR%20%28%22Gallid%20alphaherpesvirus%202%22%5BOrganism%5D%20OR%20Gallid%20alphaherpesvirus%202%5BAll%20Fields%5D%29&cmd=DetailsSearch).
 
 ## Downloading a subset of reads from the SRA
 
-The following makefile will download the reads corresponding to ILTV strain 63140 SRA accession: SRR29869142. 
+The following makefile will download N number of reads corresponding to ILTV strain 63140 SRA accession: SRR29869142. 
 
 Multiple dependencies are requiured to perform quality control and analysis, so be sure to confirm those are installed before executing.
 
