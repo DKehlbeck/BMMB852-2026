@@ -1,0 +1,7 @@
+downloads_GCF_900476085.1/ncbi_dataset
+downloads_GCF_900476085.1/ncbi_dataset/data
+downloads_GCF_900476085.1/ncbi_dataset/data/assembly_data_report.jsonl
+downloads_GCF_900476085.1/ncbi_dataset/data/dataset_catalog.json
+downloads_GCF_900476085.1/ncbi_dataset/data/GCF_900476085.1
+downloads_GCF_900476085.1/ncbi_dataset/data/GCF_900476085.1/GCF_900476085.1_50569_G01_genomic.fna
+downloads_GCF_900476085.1/ncbi_dataset/data/GCF_900476085.1/genomic.gff

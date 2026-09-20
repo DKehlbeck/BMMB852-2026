@@ -1,0 +1,7 @@
+downloads_GCF_900476085.1/data
+downloads_GCF_900476085.1/data/assembly_data_report.jsonl
+downloads_GCF_900476085.1/data/dataset_catalog.json
+downloads_GCF_900476085.1/data/fna
+downloads_GCF_900476085.1/data/fna/GCF_900476085.1.fna
+downloads_GCF_900476085.1/data/gff
+downloads_GCF_900476085.1/data/gff/GCF_900476085.1.gff
