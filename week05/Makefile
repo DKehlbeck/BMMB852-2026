@@ -6,7 +6,7 @@ ASSEMBLY_ACCESSION ?= GCA_027936885.1
 NCBI_FTP_URL ?= https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/027/936/885/GCA_027936885.1_ASM2793688v1
 SRA_ACCESSION ?= SRR29869142
 # N represents the number of reads to download
-N ?= 60000
+N ?= 16400
 ADAPTER ?= AGATCGGAAGAGCACACGTCTGAACTCCAGTCA
 THREADS ?= 4
  
@@ -40,6 +40,9 @@ BAM   := $(BAM_DIR)/$(ASSEMBLY_NAME).bam
  
 all: genome sra trim align
  
+
+
+
 # Prep directories
 dirs:
 	mkdir -p $(FASTQ_DIR) $(FASTA_DIR) $(GFF_DIR) $(SRA_META_DIR) $(NCBI_META_DIR) $(FASTP_DIR) $(BAM_DIR)
@@ -77,6 +80,7 @@ trim: sra
 # The pipefail setting makes a BWA failure visible instead of hiding it behind samtools.
 index: genome
 	bwa index $(REFERENCE)
+	samtools faidx $(REFERENCE)
 
 align: index trim
 	bwa mem -t 6 $(REFERENCE) $(TRIMMED_R1) $(TRIMMED_R2) | samtools sort -@ 6 -o $(BAM)

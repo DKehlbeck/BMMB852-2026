@@ -1,5 +1,0 @@
-Module	Section	Sample Name	Source
-FastQC	all_sections	ILTV-63140_R1	/mnt/c/Users/decla/BMMB852/BMMB852-2026/week04/fastqc_metrics/ILTV-63140_R1_fastqc.zip
-FastQC	all_sections	ILTV-63140_R2	/mnt/c/Users/decla/BMMB852/BMMB852-2026/week04/fastqc_metrics/ILTV-63140_R2_fastqc.zip
-FastQC	all_sections	ILTV-63140_trimmed_R1	/mnt/c/Users/decla/BMMB852/BMMB852-2026/week04/fastqc_metrics/ILTV-63140_trimmed_R1_fastqc.zip
-FastQC	all_sections	ILTV-63140_trimmed_R2	/mnt/c/Users/decla/BMMB852/BMMB852-2026/week04/fastqc_metrics/ILTV-63140_trimmed_R2_fastqc.zip
