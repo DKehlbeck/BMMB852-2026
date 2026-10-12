@@ -46,12 +46,12 @@ VCF := $(VCF_DIR)/$(ASSEMBLY_NAME).vcf.gz
 # INFO/ADF       forward-strand allele depth across all samples
 # INFO/ADR       reverse-strand allele depth across all samples
 # INFO/SCR       soft-clip read count across all samples
-ANN := -d 500 --annotate 'FORMAT/DP,FORMAT/AD,FORMAT/ADF,FORMAT/ADR'
+ANN := -d 500 --annotate FORMAT/DP,FORMAT/AD,FORMAT/ADF,FORMAT/ADR
 
 # ploidy 1 is best for viral genomes
 # -m is for multiallelic calling (e.g., if a site has more than one alternate allele)
 # -v is for outputting variant sites only (no reference sites)
-CALL := --ploidy 1 -m -v --annotate 'FORMAT/GQ'
+CALL := --ploidy 1 -m -v --annotate FORMAT/GQ
 
 
 ################################################################
