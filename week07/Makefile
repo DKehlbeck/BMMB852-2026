@@ -6,7 +6,7 @@ ASSEMBLY_ACCESSION ?= GCA_027936885.1
 NCBI_FTP_URL ?= https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/027/936/885/GCA_027936885.1_ASM2793688v1
 SRA_ACCESSION ?= SRR29869142
 # N represents the number of reads to download
-N ?= 500000
+N ?= 5000000
 ADAPTER ?= AGATCGGAAGAGCACACGTCTGAACTCCAGTCA
 THREADS ?= 4
  
@@ -51,7 +51,7 @@ ANN := -d 500 --annotate FORMAT/DP,FORMAT/AD,FORMAT/ADF,FORMAT/ADR
 # ploidy 1 is best for viral genomes
 # -m is for multiallelic calling (e.g., if a site has more than one alternate allele)
 # -v is for outputting variant sites only (no reference sites)
-CALL := --ploidy 1 -m -v --annotate FORMAT/GQ
+CALL := --ploidy 1 -m --keep-alts --annotate FORMAT/GQ
 
 
 ################################################################
@@ -110,13 +110,8 @@ align: index trim
 	samtools flagstat $(BAM) | tee $(BAM_DIR)/$(ASSEMBLY_NAME)_flagstat.txt
 # Print coverage plot 
 	samtools coverage -A -m $(BAM)
+
 # variant_call: call variants using bcftools mpileup | call pipeline
-# --min-BQ 20:  filter bases with PHRED quality below 20 (1% error rate)
-# --min-MQ 20:  filter reads with mapping quality below 20 (ambiguously mapped reads)
-# --excl-flags: skip unmapped, secondary alignments, QC-failed, and duplicate reads
-# --output-type u: uncompressed BCF for piping (no compression overhead between commands)
-# -m / --multiallelic-caller: use the modern calling model (handles multiple alt alleles)
-# -v / --variants-only: suppress reference sites, output only SNPs and indels
 # --output-type z: bgzipped VCF required for bcftools index
 variant_call: align
 	mkdir -p $(VCF_DIR)
@@ -124,29 +119,18 @@ variant_call: align
 	    --threads $(THREADS) \
 	    --fasta-ref $(REFERENCE) \
 	    --min-BQ 20 \
-	    --min-MQ 20 \
 	    $(ANN) \
 	    --output-type u \
 	    $(BAM) | \
 	bcftools call \
 	    --threads $(THREADS) \
-	    --multiallelic-caller \
-	    --variants-only \
 	    --output-type z \
 	    --output $(VCF) \
 	    $(CALL)
 	bcftools index $(VCF)
 	bcftools stats $(VCF) | tee $(VCF_DIR)/$(ASSEMBLY_NAME)_bcftools_stats.txt
-# annotate: variant_call
-#	bcftools csq \
-	    --fasta-ref $(REFERENCE) \
-	    --gff-annot $(GFF_DIR)/$(ASSEMBLY_ACCESSION).gff.gz \
-	    --phase a \
-	    --output-type z \
-	    --output $(CSQ_VCF) \
-	    $(VCF)
-#	bcftools index $(CSQ_VCF)
-#	bcftools stats $(CSQ_VCF) | tee $(VCF_DIR)/$(ASSEMBLY_NAME)_csq_stats.txt
+
+
 
 # Remove all downloaded data
 clean:
