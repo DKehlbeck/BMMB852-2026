@@ -1,5 +1,4 @@
-# Generating a variant call file (.vcf)
-# Variant Calling for ILTV Field Isolate 63140
+# Generating a variant call file (.vcf) for ILTV 63140 reads against its own genome and NCBI ILTV reference
 
 ## Overview
 
