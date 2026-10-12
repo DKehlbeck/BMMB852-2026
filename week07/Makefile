@@ -125,7 +125,6 @@ variant_call: align
 	    --fasta-ref $(REFERENCE) \
 	    --min-BQ 20 \
 	    --min-MQ 20 \
-	    --excl-flags UNMAP,SECONDARY,QCFAIL,DUP \
 	    $(ANN) \
 	    --output-type u \
 	    $(BAM) | \
