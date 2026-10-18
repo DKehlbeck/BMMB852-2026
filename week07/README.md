@@ -1,4 +1,4 @@
-# Generating a variant call file (.vcf) for ILTV 63140 reads against its own genome and NCBI ILTV reference
+# Generating a variant call file (.vcf) for ILTV genome reads against its own genome and NCBI ILTV reference
 
 ## Overview
 
