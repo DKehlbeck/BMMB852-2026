@@ -5,8 +5,7 @@ This makefile takes reads from different Infectious Larotrangeitis virus (ILTV),
 
 ## Strains
 
-**NCBI Reference:** SA2 strain — GCF_008787145.1
-`https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/008/787/145/GCF_008787145.1_ASM878714v1/`
+**NCBI Reference:** SA2 strain — [GCF_008787145.1](https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/008/787/145/GCF_008787145.1_ASM878714v1/)
  
 | Sample    | SRR           | Description          |
 |-----------|---------------|----------------------|
@@ -39,6 +38,38 @@ week08/
 ├── NCBI_metadata/
 └── SRA_metadata/
 ```
+
+## Execution
+
+Variables
+    Reference Variables: links to NCBI FTA downloads fr reference genome .fna and .gff files. 
+    Sample variables: Sample names and SRR numbers correspnding to given samples
+    N: Number of reads to download for every sample. May need to be adjusted depending on how many reads actually map
+
+```bash
+make all
+```
+
+Individual targets:
+ 
+```bash
+make genome    # download SA2 reference FASTA and GFF
+make index     # bwa + samtools index the reference
+make samples   # download, trim, align, and call variants for all four strains
+make merge     # simultaneous multi-sample variant calling across all BAMs
+make clean     # remove all generated files
+```
+
+Pixi envionment requiurements
+- bwa
+- samtools
+- bcftools
+- fastp
+- fastq-dump
+- seqkit
+- bedtools
+- tabix
+
 ## Results
 
 ### Per-strain divergence from SA2
