@@ -2,34 +2,31 @@
 
 ## Overview
 
-This is an updated script from (url:https://github.com/DKehlbeck/BMMB852-2026/blob/main/week08/Makefile) to download reads from given SRA accession numbers, map them to the NCBI reference genome and identify sites of difference. 
+This is an updated script from (url:https://github.com/DKehlbeck/BMMB852-2026/blob/main/week05/Makefile) to download reads from given SRA accession numbers, map them to the NCBI reference genome and identify sites of difference. 
 
-Updates / alterations include the use of a design.csv file to act as input for multiple accession numbers for both a BioProject accession or a SRR accession, as well as your input fasta reference. A python script is used to parse the design.csv accession numbers and pull out all SRR numbers associated with the given BioProject, then append them with any individually listed SRR accession numbers.
+Updates / alterations include the use of a design.csv file to act as input for multiple accession numbers.
 
-The currently listed design.tsv will download the ILTV (Infectious Laryngeotitis Virus) NCBI reference genome, SA2 ([GCF_008787145.1](https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_008787145.1/)), along with the reads associated with the BioProject: Genome sequencing of Gallid alphaherpesvirus 1 (ILTV) US field and vaccine strains ([PRJNA1136498](https://www.ncbi.nlm.nih.gov/bioproject/?term=PRJNA1136498)). Additionally, two other ILTV strains were included as individual SRR numbers: an additional vaccine strain ([SRR29859430](https://trace.ncbi.nlm.nih.gov/Traces/index.html?view=run_browser&acc=SRR29859430&display=metadata)) and another strain from outside of the US ([SRR8282614](https://trace.ncbi.nlm.nih.gov/Traces/index.html?view=run_browser&acc=SRR8282614&display=metadata)).
+The currently listed design.csv will download the ILTV (Infectious Laryngeotitis Virus) NCBI reference genome, SA2 ([GCF_008787145.1](https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_008787145.1/)), along with the reads associated with the BioProject: Genome sequencing of Gallid alphaherpesvirus 1 (ILTV) US field and vaccine strains ([PRJNA1136498](https://www.ncbi.nlm.nih.gov/bioproject/?term=PRJNA1136498)). 
 
-However, it should be adaptable to any other set of refernece or SRR genomes
+
+Additionally, two other ILTV strains were included as individual SRR numbers: an additional vaccine strain ([SRR29859430](https://trace.ncbi.nlm.nih.gov/Traces/index.html?view=run_browser&acc=SRR29859430&display=metadata)) and another strain from outside of the US ([SRR8282614](https://trace.ncbi.nlm.nih.gov/Traces/index.html?view=run_browser&acc=SRR8282614&display=metadata)).
+
 ## Script execution
 
-### Fill the design.csv
+### Fill or append the design.csv
 
-Design file structure is as follows with the first column representing the accession number
+Design file structure is as follows with the first column representing the accession number and the second column containing the sample name, without spaces
 
-    - Assembly accession
-    - SRR or BioProject accession
+| SRRAccession | LibraryName | AssemblyAccession | Host | Vaccination | Flock status | Country | Year | genogroup | SRAStudy | BioProject | Submission | Model | TaxID | ScientificName | Comments |
+|---|---|---|---|---|---|---|---:|---:|---|---|---|---|---:|---|---|
+| SRR29869143 | 81658 | JN542535 | Chicken | Non-vaccinated | Broiler | United States | 2012 | 3 | SRP520614 | PRJNA1136498 | SRA1926590 | Illumina HiSeq 2000 | 10386 | Gallid alphaherpesvirus 1 | non-vaccinated broiler (Group III) |
+| SRR29869142 | 63140 | JN542536 | Chicken | NA | Broiler Breeder | United States | 2006 | 5 | SRP520614 | PRJNA1136498 | SRA1926590 | Illumina HiSeq 2000 | 10386 | Gallid alphaherpesvirus 1 | broiler breeder in Georgia (Group V) |
+| SRR29869140 | 3.26.90 | MF417809 | Chicken | Non-vaccinated | Backyard | United States | 1990 | 4 | SRP520614 | PRJNA1136498 | SRA1926590 | Illumina MiSeq | 10386 | Gallid alphaherpesvirus 1 | non-vaccinated backyard chicken (Group IV) |
+| SRR29869141 | 6.48.88 | MF417810 | Chicken | Non-vaccinated | Backyard | United States | 1988 | 8 | SRP520614 | PRJNA1136498 | SRA1926590 | Illumina MiSeq | 10386 | Gallid alphaherpesvirus 1 | non-vaccinated backyard chicken (Group VIII) |
+| SRR29869139 | 14.939 | MF417811 | Chicken | Vaccinated | Broiler | United States | 2014 | 5 | SRP520614 | PRJNA1136498 | SRA1926590 | Illumina MiSeq | 10386 | Gallid alphaherpesvirus 1 | Recombinant LT vaccinated broiler 2014 |
+| SRR29869138 | S2.816 | MF417812 | Peafowl | Non-vaccinated | Game | United States | 2002 | 7 | SRP520614 | PRJNA1136498 | SRA1926590 | Illumina MiSeq | 10386 | Gallid alphaherpesvirus 1 | Unvaccinated peafowl (Group VII) |
+| SRR29869137 | J2 | MF417813 | Chicken | Non-vaccinated | Game | United States | 2008 | 6 | SRP520614 | PRJNA1136498 | SRA1926590 | Illumina MiSeq | 10386 | Gallid alphaherpesvirus 1 | Unvaccinated game chicken (Group VI) |
 
-The second column should contain whether that will be used as the reference genome, for all reads to map to and use for variant calling, or as a set of samples to identify read supported variants with. As mentioned previously these can either be in the form of a BioProject accession number or individually listed SRR numbers.
-
-
-Current Example:
-
-```bash
-Accession,type
-GCF_008787145.1,reference
-SRR8282614,sample
-PRJNA1136498,sample
-SRR29859430,sample
-```
 
 ### Change makefile input parameters
 
@@ -46,7 +43,7 @@ THREADS ?= 4
 
 ### Execution
 
-To execute the whole pipeline:
+To execute the pipeline on a single genome (Peru-1 as listed in Makefile):
 
 ```bash
 make all
@@ -71,12 +68,20 @@ For information following the run on genomes included and file locations
 make info
 ```
 
-If you want to confirm SRR accessions:
-
+To use the design file run
 ```bash
-python parse_accessions.py
+make batch
 ```
 
-Additionally, this can be ediited prior to make all if you have any additional changes.
+To use a differnt SRR number and append those variants to the reference, use the following example
+```bash
+make all SRR=SRR29859430 SAMPLE_NAME=Trachivax && make merge
+```
 
-The sample rule supports both paired-end reads (`*_1.fastq` and `*_2.fastq`) and single-end reads. For single-end runs, it recognizes either `*_1.fastq` or the unnumbered `*.fastq` file produced by `fastq-dump --split-files`.
+Execution of the preceding commands
+```bash
+make all && make batch && make all SRR=SRR29859430 SAMPLE_NAME=Trachivax && make merge
+```
+
+will yield a merged vcf which can be visualized in igv:
+![IGV visualization](images/compiled_vcf.161039.png)
