@@ -52,6 +52,19 @@ To execute the whole pipeline:
 make all
 ```
 
+Individual stages can also be requested directly. Each stage runs its required
+prerequisites first (for example, `make trim` downloads the reads if needed):
+
+```bash
+make genome    # download the reference and NCBI metadata
+make sra       # download reads and save SRA metadata
+make trim      # trim the reads
+make index     # index the reference
+make align     # align trimmed reads and create BAMs
+make variants  # call per-sample variants
+make merge     # create the merged multi-sample VCF
+```
+
 For information following the run on genomes included and file locations
 
 ```bash
@@ -67,4 +80,3 @@ python parse_accessions.py
 Additionally, this can be ediited prior to make all if you have any additional changes.
 
 The sample rule supports both paired-end reads (`*_1.fastq` and `*_2.fastq`) and single-end reads. For single-end runs, it recognizes either `*_1.fastq` or the unnumbered `*.fastq` file produced by `fastq-dump --split-files`.
-

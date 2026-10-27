@@ -1,8 +1,8 @@
 SRRAccession,LibraryName,AssemblyAccession,Host,Vaccination,Flock status,Country,Year,genogroup,SRAStudy,BioProject,Submission,Model,TaxID,ScientificName,,Comments
-SRR29869143,GaHV-1 isolate 81658,JN542535,Chicken,Non-vaccinated,Broiler,United States,2012,3,SRP520614,PRJNA1136498,SRA1926590,Illumina HiSeq 2000,10386,Gallid alphaherpesvirus 1,,non-vaccinated broiler (Group III) 
-SRR29869142,GaHV-1 isolate 63140,JN542536,Chicken,NA,Broiler Breeder,United States,2006,5,SRP520614,PRJNA1136498,SRA1926590,Illumina HiSeq 2000,10386,Gallid alphaherpesvirus 1,,broiler breeder in Georgia (Group V)
-SRR29869140,GaHV-1 isolate 3.26.90,MF417809,Chicken,Non-vaccinated,Backyard,United States,1990,4,SRP520614,PRJNA1136498,SRA1926590,Illumina MiSeq,10386,Gallid alphaherpesvirus 1,,non-vaccinated backyard chicken (Group IV)
-SRR29869141,GaHV-1 isolate 6.48.88,MF417810,Chicken,Non-vaccinated,Backyard,United States,1988,8,SRP520614,PRJNA1136498,SRA1926590,Illumina MiSeq,10386,Gallid alphaherpesvirus 1,,non-vaccinated backyard chicken (Group VIII)
-SRR29869139,GaHV-1 isolate 14.939,MF417811,Chicken,Vaccinated,Broiler,United States,2014,5,SRP520614,PRJNA1136498,SRA1926590,Illumina MiSeq,10386,Gallid alphaherpesvirus 1,,Recombinant LT vaccinated broiler 2014
-SRR29869138,GaHV-1 isolate S2.816,MF417812,Peafowl,Non-vaccinated,Game,United States,2002,7,SRP520614,PRJNA1136498,SRA1926590,Illumina MiSeq,10386,Gallid alphaherpesvirus 1,,Unvaccinated peafowl (Group VII)
-SRR29869137,GaHV-1 isolate J2,MF417813,Chicken,Non-vaccinated,Game,United States,2008,6,SRP520614,PRJNA1136498,SRA1926590,Illumina MiSeq,10386,Gallid alphaherpesvirus 1,,Unvaccinated game chicken (Group VI)
+SRR29869143,81658,JN542535,Chicken,Non-vaccinated,Broiler,United States,2012,3,SRP520614,PRJNA1136498,SRA1926590,Illumina HiSeq 2000,10386,Gallid alphaherpesvirus 1,,non-vaccinated broiler (Group III) 
+SRR29869142,63140,JN542536,Chicken,NA,Broiler Breeder,United States,2006,5,SRP520614,PRJNA1136498,SRA1926590,Illumina HiSeq 2000,10386,Gallid alphaherpesvirus 1,,broiler breeder in Georgia (Group V)
+SRR29869140,3.26.90,MF417809,Chicken,Non-vaccinated,Backyard,United States,1990,4,SRP520614,PRJNA1136498,SRA1926590,Illumina MiSeq,10386,Gallid alphaherpesvirus 1,,non-vaccinated backyard chicken (Group IV)
+SRR29869141,6.48.88,MF417810,Chicken,Non-vaccinated,Backyard,United States,1988,8,SRP520614,PRJNA1136498,SRA1926590,Illumina MiSeq,10386,Gallid alphaherpesvirus 1,,non-vaccinated backyard chicken (Group VIII)
+SRR29869139,14.939,MF417811,Chicken,Vaccinated,Broiler,United States,2014,5,SRP520614,PRJNA1136498,SRA1926590,Illumina MiSeq,10386,Gallid alphaherpesvirus 1,,Recombinant LT vaccinated broiler 2014
+SRR29869138,S2.816,MF417812,Peafowl,Non-vaccinated,Game,United States,2002,7,SRP520614,PRJNA1136498,SRA1926590,Illumina MiSeq,10386,Gallid alphaherpesvirus 1,,Unvaccinated peafowl (Group VII)
+SRR29869137,J2,MF417813,Chicken,Non-vaccinated,Game,United States,2008,6,SRP520614,PRJNA1136498,SRA1926590,Illumina MiSeq,10386,Gallid alphaherpesvirus 1,,Unvaccinated game chicken (Group VI)
