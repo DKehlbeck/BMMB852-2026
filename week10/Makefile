@@ -39,6 +39,8 @@ NCBI_META_DIR := NCBI_metadata
 FASTP_DIR     := fastp_metrics
 BAM_DIR       := alignments
 VCF_DIR       := vcf
+PEAKS_DIR     := peaks
+BW_DIR        := bigwig
 
 ##############################################################################
 # SCRIPTS / INPUT FILES
@@ -52,6 +54,9 @@ REF_URL_FILE := ref_url.txt
 # DERIVED SAMPLE PATHS
 # NAME is resolved from the .name sidecar when SAMPLE_NAME is not set.
 ##############################################################################
+INPUT_BAM    = $(BAM_DIR)/Input_chromatin_control.bam
+MOCK_BAM     = $(BAM_DIR)/PolII_ChIPSeq_mock.bam
+INFECTED_BAM = $(BAM_DIR)/PolII_ChIPSeq_HSV1_KOS.bam
 FASTQ_1 = $(FASTQ_DIR)/$(SRR)_1.fastq
 FASTQ_2 = $(FASTQ_DIR)/$(SRR)_2.fastq
 BAM     = $(BAM_DIR)/$(SAMPLE_NAME).bam
@@ -62,13 +67,19 @@ VCF     = $(VCF_DIR)/$(SAMPLE_NAME).vcf.gz
 ##############################################################################
 ANN  = -d 500 --annotate 'FORMAT/DP,FORMAT/AD,FORMAT/ADF,FORMAT/ADR'
 CALL = --ploidy 1 --annotate 'FORMAT/GQ'
+
+##############################################################################
+# MACS3 peak filtering/calling FLAGS
+##############################################################################
+MACS3_GENOME_SIZE = 152000
+MACS3_FLAGS       = --nomodel --broad -g $(MACS3_GENOME_SIZE)
  
 ##############################################################################
 # BATCH
 ##############################################################################
 DESIGN   = design.csv
 PARALLEL = parallel --colsep , --header : --eta --lb -j 4
- 
+
 #####################################################################################################################################################################
 # Code below
 #####################################################################################################################################################################
@@ -123,7 +134,7 @@ info:
 dirs:
 	mkdir -p $(FASTQ_DIR) $(FASTA_DIR) $(GFF_DIR) \
 	         $(SRA_META_DIR) $(NCBI_META_DIR) $(FASTP_DIR) \
-	         $(BAM_DIR) $(VCF_DIR)
+	         $(BAM_DIR) $(VCF_DIR) $(BAM_DIR) $(PEAKS_DIR) $(BW_DIR)
  
 ##############################################################################
 # STEP 1 — download reference FASTA, GFF, and NCBI metadata via curl
@@ -180,7 +191,60 @@ $(BAM): $(INDEX) $(FASTQ_1) $(FASTQ_2)
 	    | samtools sort -@ $(THREADS) -o $@
 	samtools index $@
 	samtools flagstat $@ | tee $(BAM_DIR)/$(SAMPLE_NAME)_flagstat.txt
- 
+
+
+
+##############################################################################
+# STEP 5a — peak calling: mock vs input
+# -t = treatment (mock ChIP), -c = control (input chromatin)
+##############################################################################
+MOCK_PEAKS = $(PEAKS_DIR)/$(MOCK_NAME)_peaks.broadPeak
+
+$(MOCK_PEAKS): $(MOCK_BAM) $(INPUT_BAM)
+	mkdir -p $(PEAKS_DIR)
+	macs3 callpeak \
+	    -t $(MOCK_BAM) \
+	    -c $(INPUT_BAM) \
+	    -n $(MOCK_NAME) \
+	    $(MACS3_FLAGS) \
+	    --outdir $(PEAKS_DIR)
+	wc -l $(MOCK_PEAKS)
+
+##############################################################################
+# STEP 5b — peak calling: infected vs input
+##############################################################################
+INFECTED_PEAKS = $(PEAKS_DIR)/$(INFECTED_NAME)_peaks.broadPeak
+
+$(INFECTED_PEAKS): $(INFECTED_BAM) $(INPUT_BAM)
+	mkdir -p $(PEAKS_DIR)
+	macs3 callpeak \
+	    -t $(INFECTED_BAM) \
+	    -c $(INPUT_BAM) \
+	    -n $(INFECTED_NAME) \
+	    $(MACS3_FLAGS) \
+	    --outdir $(PEAKS_DIR)
+	wc -l $(INFECTED_PEAKS)
+
+peaks: $(MOCK_PEAKS) $(INFECTED_PEAKS)
+
+##############################################################################
+# STEP 6 — bigWig coverage tracks for IGV visualization
+# bamCoverage from deeptools normalizes by sequencing depth (RPKM)
+##############################################################################
+coverage: \
+    $(BW_DIR)/$(INPUT_NAME).bw \
+    $(BW_DIR)/$(MOCK_NAME).bw \
+    $(BW_DIR)/$(INFECTED_NAME).bw
+
+$(BW_DIR)/%.bw: $(BAM_DIR)/%.bam
+	mkdir -p $(BW_DIR)
+	bamCoverage --binSize 1 \
+	    --normalizeUsing RPKM \
+	    -p $(THREADS) \
+	    -b $< \
+	    -o $@
+
+
 ##############################################################################
 # STEP 5 — per-sample variant calling
 ##############################################################################
@@ -199,17 +263,22 @@ $(VCF): $(BAM) $(GENOME_FASTA)
  
 # Single sample — genome downloaded once, skipped if already present.
 # Default: Peru-1. Override: make all SRR=X SAMPLE_NAME=Y
-all: genome index fastq align call
- 
+all: genome index
+	$(MAKE) fastq align SRR=$(INPUT_SRR)   SAMPLE_NAME=$(INPUT_NAME)
+	$(MAKE) fastq align SRR=$(MOCK_SRR)    SAMPLE_NAME=$(MOCK_NAME)
+	$(MAKE) fastq align SRR=$(INFECTED_SRR) SAMPLE_NAME=$(INFECTED_NAME)
+	$(MAKE) peaks
+	$(MAKE) coverage 
 # Batch — reference built first (skipped if present), then fastq/align/call
 # runs for every row in design.csv in parallel.
 # CSV must have header: SRRAccession,SampleName (spaces replaced with _ beforehand)
 batch: genome index
-	cat $(DESIGN) | $(PARALLEL) make \
+	cat $(DESIGN) | $(PARALLEL) $(MAKE) \
 	    SRR={SRRAccession} \
 	    SAMPLE_NAME={LibraryName} \
-	    fastq align call
-	$(MAKE) merge
+	    fastq align
+	$(MAKE) peaks
+	$(MAKE) coverage
  
 # Merge — run manually once all samples are complete.
 # Produces merged-VCF.vcf.gz (bcftools merge) and merged-BAM.vcf.gz (mpileup).
