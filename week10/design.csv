@@ -1,0 +1,4 @@
+SRRAccession,LibraryName,Host,Condition,Virus,SRAStudy,BioProject,Model,TaxID,ScientificName,Comments
+SRR2395215,Input_chromatin_control; Mus musculus,Mouse,Control,NA,SRP055781 ,PRJNA277056 ,Illumina HiSeq 2000,0,10298 ,
+"SRR1824575	",PolII_ChIPSeq_HSV1_KOS,Mouse,Infected,KOS63,SRP055781,PRJNA277056 ,Illumina HiSeq 2000,,10298 ,
+SRR1824574,PolII_ChIPSeq_mock,Mouse,Mock,Mock,SRP055781,PRJNA277056 ,Illumina HiSeq 2000,,10298 ,
