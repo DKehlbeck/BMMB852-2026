@@ -6,7 +6,7 @@ SHELL := /bin/bash
 ##############################################################################
 # INPUT PARAMETERS
 ##############################################################################
-N       ?= 10000
+N       ?= 500000
 ADAPTER ?= AGATCGGAAGAGCACACGTCTGAACTCCAGTCA
 THREADS ?= 4
 
@@ -187,7 +187,7 @@ call: $(VCF)
  
 $(VCF): $(BAM) $(GENOME_FASTA)
 	mkdir -p $(VCF_DIR)
-	bcftools mpileup $(ANN) -O u -f $(GENOME_FASTA) $(BAM) | \make
+	bcftools mpileup $(ANN) -O u -f $(GENOME_FASTA) $(BAM) | \
 	    bcftools call $(CALL) -mv -O u | \
 	    bcftools norm -f $(GENOME_FASTA) -d all -O u | \
 	    bcftools sort --write-index -O z -o $(VCF)
