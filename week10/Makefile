@@ -13,7 +13,7 @@ THREADS ?= 4
 ##############################################################################
 # SINGLE-SAMPLE DEFAULTS
 ##############################################################################
-SRR 		= SRR34935931	
+SRR 		= SRR34935931
 #SRR         = SRR34326947 # Alternative set of reads for KOS
 SAMPLE_NAME = KOS
 
@@ -46,9 +46,7 @@ BW_DIR        := bigwig
 # SCRIPTS / INPUT FILES
 ##############################################################################
 PARSE_SCRIPT := parse_accessions.py
-DESIGN_FILE  := design.tsv
-SRR_TSV      := SRR_accessions.tsv
-REF_URL_FILE := ref_url.txt
+DESIGN_FILE  := design.csv
  
 ##############################################################################
 # DERIVED SAMPLE PATHS
@@ -58,7 +56,6 @@ INPUT_BAM    = $(BAM_DIR)/Input_chromatin_control.bam
 MOCK_BAM     = $(BAM_DIR)/PolII_ChIPSeq_mock.bam
 INFECTED_BAM = $(BAM_DIR)/PolII_ChIPSeq_HSV1_KOS.bam
 FASTQ_1 = $(FASTQ_DIR)/$(SRR)_1.fastq
-FASTQ_2 = $(FASTQ_DIR)/$(SRR)_2.fastq
 BAM     = $(BAM_DIR)/$(SAMPLE_NAME).bam
 VCF     = $(VCF_DIR)/$(SAMPLE_NAME).vcf.gz
  
@@ -71,8 +68,10 @@ CALL = --ploidy 1 --annotate 'FORMAT/GQ'
 ##############################################################################
 # MACS3 peak filtering/calling FLAGS
 ##############################################################################
-MACS3_GENOME_SIZE = 152000
-MACS3_FLAGS       = --nomodel --broad -g $(MACS3_GENOME_SIZE)
+MACS3_GENOME_SIZE 	= 165101
+MACS3_FLAGS       	= --nomodel --broad -g $(MACS3_GENOME_SIZE)
+MOCK_NAME			= Mock_infected
+INFECTED_NAME		= HSV1_KOS_infected
  
 ##############################################################################
 # BATCH
@@ -170,12 +169,12 @@ $(INDEX): $(GENOME_FASTA)
 ##############################################################################
 # STEP 3 — download reads
 ##############################################################################
-fastq: $(FASTQ_1) $(FASTQ_2)
+fastq: $(FASTQ_1) 
  
-$(FASTQ_1) $(FASTQ_2):
+$(FASTQ_1) :
 	mkdir -p $(FASTQ_DIR)
 	fastq-dump -X $(N) --split-files -O $(FASTQ_DIR) $(SRR)
-	seqkit stats $(FASTQ_1) $(FASTQ_2)
+	seqkit stats $(FASTQ_1) 
 	bio search $(SRR) | tee $(SRA_META_DIR)/$(SRR)_metadata.json
  
 ##############################################################################
@@ -183,11 +182,11 @@ $(FASTQ_1) $(FASTQ_2):
 ##############################################################################
 align: $(BAM)
  
-$(BAM): $(INDEX) $(FASTQ_1) $(FASTQ_2)
+$(BAM): $(INDEX) $(FASTQ_1) 
 	mkdir -p $(BAM_DIR)
 	bwa mem -t $(THREADS) \
 	    -R "@RG\tID:$(SAMPLE_NAME)\tSM:$(SAMPLE_NAME)\tPL:ILLUMINA" \
-	    $(GENOME_FASTA) $(FASTQ_1) $(FASTQ_2) \
+	    $(GENOME_FASTA) $(FASTQ_1)  \
 	    | samtools sort -@ $(THREADS) -o $@
 	samtools index $@
 	samtools flagstat $@ | tee $(BAM_DIR)/$(SAMPLE_NAME)_flagstat.txt
@@ -206,7 +205,6 @@ $(MOCK_PEAKS): $(MOCK_BAM) $(INPUT_BAM)
 	    -t $(MOCK_BAM) \
 	    -c $(INPUT_BAM) \
 	    -n $(MOCK_NAME) \
-	    $(MACS3_FLAGS) \
 	    --outdir $(PEAKS_DIR)
 	wc -l $(MOCK_PEAKS)
 
@@ -221,7 +219,6 @@ $(INFECTED_PEAKS): $(INFECTED_BAM) $(INPUT_BAM)
 	    -t $(INFECTED_BAM) \
 	    -c $(INPUT_BAM) \
 	    -n $(INFECTED_NAME) \
-	    $(MACS3_FLAGS) \
 	    --outdir $(PEAKS_DIR)
 	wc -l $(INFECTED_PEAKS)
 
@@ -292,12 +289,9 @@ merge:
 # CLEAN
 ##############################################################################
 clean:
-	rm -f $(FASTQ_DIR)/*.fastq $(BAM_DIR)/*.bam $(BAM_DIR)/*.bai \
-	      $(VCF_DIR)/*.vcf.gz $(VCF_DIR)/*.tbi $(VCF_DIR)/*.csi
- 
-cleanall: clean
 	rm -rf $(FASTQ_DIR) $(FASTA_DIR) $(GFF_DIR) \
 	       $(SRA_META_DIR) $(NCBI_META_DIR) $(FASTP_DIR) \
-	       $(BAM_DIR) $(VCF_DIR)
+	       $(BAM_DIR) $(VCF_DIR) \
+		   $(PEAKS_DIR) $(BW_DIR)
  
-.PHONY: info all dirs genome index fastq align call batch merge clean cleanall
+.PHONY: info all dirs genome index fastq align call batch merge clean
