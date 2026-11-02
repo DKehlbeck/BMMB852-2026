@@ -6,7 +6,7 @@ SHELL := /bin/bash
 ##############################################################################
 # INPUT PARAMETERS
 ##############################################################################
-N       ?= 500000
+N       ?= 5000000
 ADAPTER ?= AGATCGGAAGAGCACACGTCTGAACTCCAGTCA
 THREADS ?= 4
 
@@ -69,7 +69,6 @@ CALL = --ploidy 1 --annotate 'FORMAT/GQ'
 # MACS3 peak filtering/calling FLAGS
 ##############################################################################
 MACS3_GENOME_SIZE 	= 165101
-MACS3_FLAGS       	= --nomodel --broad -g $(MACS3_GENOME_SIZE)
 MOCK_NAME			= Mock_infected
 INFECTED_NAME		= HSV1_KOS_infected
  
@@ -203,8 +202,8 @@ $(MOCK_PEAKS): $(MOCK_BAM) $(INPUT_BAM)
 	mkdir -p $(PEAKS_DIR)
 	macs3 callpeak \
 	    -t $(MOCK_BAM) \
-	    -c $(INPUT_BAM) \
 	    -n $(MOCK_NAME) \
+		--nomodel --broad -g $(MACS3_GENOME_SIZE) \
 	    --outdir $(PEAKS_DIR)
 	wc -l $(MOCK_PEAKS)
 
@@ -217,8 +216,8 @@ $(INFECTED_PEAKS): $(INFECTED_BAM) $(INPUT_BAM)
 	mkdir -p $(PEAKS_DIR)
 	macs3 callpeak \
 	    -t $(INFECTED_BAM) \
-	    -c $(INPUT_BAM) \
 	    -n $(INFECTED_NAME) \
+		--nomodel --broad -g $(MACS3_GENOME_SIZE) \
 	    --outdir $(PEAKS_DIR)
 	wc -l $(INFECTED_PEAKS)
 
