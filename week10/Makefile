@@ -52,9 +52,9 @@ DESIGN_FILE  := design.csv
 # DERIVED SAMPLE PATHS
 # NAME is resolved from the .name sidecar when SAMPLE_NAME is not set.
 ##############################################################################
-INPUT_BAM    = $(BAM_DIR)/Input_chromatin_control.bam
-MOCK_BAM     = $(BAM_DIR)/PolII_ChIPSeq_mock.bam
-INFECTED_BAM = $(BAM_DIR)/PolII_ChIPSeq_HSV1_KOS.bam
+INPUT_BAM    = $(BAM_DIR)/$(INPUT_NAME).bam
+MOCK_BAM     = $(BAM_DIR)/$(MOCK_NAME).bam
+INFECTED_BAM = $(BAM_DIR)/$(INFECTED_NAME).bam
 FASTQ_1 = $(FASTQ_DIR)/$(SRR)_1.fastq
 BAM     = $(BAM_DIR)/$(SAMPLE_NAME).bam
 VCF     = $(VCF_DIR)/$(SAMPLE_NAME).vcf.gz
@@ -69,8 +69,10 @@ CALL = --ploidy 1 --annotate 'FORMAT/GQ'
 # MACS3 peak filtering/calling FLAGS
 ##############################################################################
 MACS3_GENOME_SIZE 	= 165101
-MOCK_NAME			= Mock_infected
-INFECTED_NAME		= HSV1_KOS_infected
+
+INPUT_NAME    = Input_chromatin_control
+MOCK_NAME     = PolII_ChIPSeq_mock
+INFECTED_NAME = PolII_ChIPSeq_HSV1_KOS
  
 ##############################################################################
 # BATCH
