@@ -1,6 +1,7 @@
 # Input and output files
 DESIGN_FILE = "design.csv"
 COUNT_DIRECTORY = "counts_transcripts"
+GTF_FILE = "gtf/chr22.gtf"
 OUTPUT_FILE = "csv/transcript_counts.csv"
 
 # Read sample names in the order listed in the design file
@@ -55,6 +56,34 @@ read_sample_counts = function(count_file) {
   )
 }
 
+# Extract transcript IDs and gene names from GTF
+read_gtf_gene_names = function(gtf_file) {
+
+  gtf = read.delim(
+    gtf_file,
+    comment.char = "#",
+    header = FALSE,
+    sep = "\t",
+    stringsAsFactors = FALSE
+  )
+
+  transcripts = gtf[gtf$V3 == "transcript", ]
+
+  data.frame(
+    transcript_id = sub(
+      '.*transcript_id ([^;]+);.*',
+      '\\1',
+      transcripts$V9
+    ),
+    gene_name = sub(
+      '.*gene_name ([^;]+);.*',
+      '\\1',
+      transcripts$V9
+    ),
+    stringsAsFactors = FALSE
+  )
+}
+
 # Load each sample's counts
 sample_counts = lapply(count_files, read_sample_counts)
 
@@ -86,6 +115,20 @@ transcript_count_table = data.frame(
   as.data.frame(count_matrix, check.names = FALSE),
   check.names = FALSE
 )
+
+# Add gene names to count table
+gene_annotations = read_gtf_gene_names(GTF_FILE)
+
+transcript_count_table$gene_name = gene_annotations$gene_name[
+  match(transcript_count_table$transcript_id,
+        gene_annotations$transcript_id)
+]
+
+# Move gene_name next to transcript_id
+transcript_count_table = transcript_count_table[
+  , c("transcript_id", "gene_name",
+      setdiff(names(transcript_count_table), c("transcript_id", "gene_name")))
+]
 
 # Save the combined matrix
 dir.create(dirname(OUTPUT_FILE), recursive = TRUE, showWarnings = FALSE)
